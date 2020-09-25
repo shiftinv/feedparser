@@ -72,7 +72,7 @@ SUPPORTED_VERSIONS = {
 }
 
 
-def _open_resource(url_file_stream_or_string, etag, modified, agent, referrer, handlers, request_headers, result):
+def _open_resource(url_file_stream_or_string, etag, modified, agent, referrer, handlers, request_headers, result, timeout):
     """URL, filename, or string --> stream
 
     This function lets you define parsers that take any input source
@@ -111,7 +111,7 @@ def _open_resource(url_file_stream_or_string, etag, modified, agent, referrer, h
 
     if isinstance(url_file_stream_or_string, str) \
        and urllib.parse.urlparse(url_file_stream_or_string)[0] in ('http', 'https', 'ftp', 'file', 'feed'):
-        return http.get(url_file_stream_or_string, etag, modified, agent, referrer, handlers, request_headers, result)
+        return http.get(url_file_stream_or_string, etag, modified, agent, referrer, handlers, request_headers, result, timeout)
 
     # try to open with native open function (if url_file_stream_or_string is a filename)
     try:
@@ -148,7 +148,7 @@ StrictFeedParser = type(
 )
 
 
-def parse(url_file_stream_or_string, etag=None, modified=None, agent=None, referrer=None, handlers=None, request_headers=None, response_headers=None, resolve_relative_uris=None, sanitize_html=None):
+def parse(url_file_stream_or_string, etag=None, modified=None, agent=None, referrer=None, handlers=None, request_headers=None, response_headers=None, resolve_relative_uris=None, sanitize_html=None, timeout=15):
     """Parse a feed from a URL, file, stream, or string.
 
     :param url_file_stream_or_string:
@@ -211,7 +211,7 @@ def parse(url_file_stream_or_string, etag=None, modified=None, agent=None, refer
         headers={},
     )
 
-    data = _open_resource(url_file_stream_or_string, etag, modified, agent, referrer, handlers, request_headers, result)
+    data = _open_resource(url_file_stream_or_string, etag, modified, agent, referrer, handlers, request_headers, result, timeout)
 
     if not data:
         return result
